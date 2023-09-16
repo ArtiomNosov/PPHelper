@@ -1,0 +1,24 @@
+name: Health Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: curl actuator
+        id: ping
+        run: |
+          echo "::set-output name=status::$(curl https://${{ vars.HOSTNAME }}:443/actuator/health)"
+
+      - name: health check
+        run: |
+          if [[ ${{ steps.ping.outputs.status }} != *"UP"* ]]; then
+            echo "health check is failed"
+            exit 1
+          fi
+          echo "It's OK"

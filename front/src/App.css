@@ -1,0 +1,27 @@
+html {
+    box-sizing: border-box;
+    font-size: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: #F9F9F9;
+    color: #606468;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+}
+
+input {
+    outline: 0;
+}
+
+#root {
+    width: 100%;
+}

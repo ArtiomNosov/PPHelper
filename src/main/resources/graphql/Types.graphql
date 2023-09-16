@@ -1,0 +1,194 @@
+#_____________________________________________ SCALAR START ______________________________________________________________
+#directive @specifiedBy(url: String!) on SCALAR
+
+scalar DateTime @specifiedBy(url: "https://scalars.graphql.org/andimarek/date-time.html")
+scalar UUID @specifiedBy(url:"https://tools.ietf.org/html/rfc4122")
+scalar Url @specifiedBy(url:"https://www.w3.org/Addressing/URL/url-spec.txt")
+#_____________________________________________ SCALAR END ______________________________________________________________
+
+#_____________________________________________ STAGEINFO START _________________________________________________________
+enum Stage {
+  Registering,
+  Working,
+  Marking,
+  Problems,
+  Ending
+}
+
+type StageInfo {
+  id: ID!
+  title: String!
+  stage: Stage!
+  start: DateTime!
+  end: DateTime!
+}
+
+input StageInfoInput {
+  title: String!
+  stage: Stage!
+  start: DateTime!
+  end: DateTime!
+}
+#_____________________________________________ STAGEINFO END ___________________________________________________________
+
+#_____________________________________________ SEASON START ____________________________________________________________
+type Season {
+  id: ID!
+  title: String!
+  stages: [StageInfo!]!
+  start: DateTime!
+  end: DateTime!
+}
+
+input SeasonInput {
+  title: String!
+  start: DateTime!
+  end: DateTime!
+}
+#_____________________________________________ SEASON END ______________________________________________________________
+
+#_____________________________________________ USER START ______________________________________________________________
+enum UserRole {
+  Administrator,
+  Moderator,
+  Mentor,
+  Participant
+}
+
+enum UserState {
+  Deleted,
+  Banned,
+  Unconfirmed,
+  Confirmed
+}
+
+type User {
+  id: ID!
+  state: UserState!
+
+  firstName: String!
+  secondName: String!
+  thirdName: String!
+
+  #urlVkontakte: Url!
+  telegramUsername: String!
+
+  group: String!
+  organization: String!
+}
+
+input UserInput {
+  firstName: String!
+  secondName: String!
+  thirdName: String!
+
+  #urlVkontakte: String!
+  #urlTelegram: String!
+
+  group: String!
+  organization: String!
+}
+#_____________________________________________ USER END ________________________________________________________________
+
+#_____________________________________________ CREDENTIALS START _______________________________________________________
+input CredentialsInput {
+  login: String!
+  password: String!
+}
+#_____________________________________________ CREDENTIALS END _________________________________________________________
+
+#_____________________________________________ FILE START ______________________________________________________________
+enum FileAccessPolicy {
+  Public,
+
+  Owner,
+  Administrators,
+  Moderators,
+  Mentors,
+  Participants,
+
+  Team
+}
+#_____________________________________________ FILE START ______________________________________________________________
+
+#_____________________________________________ THEME START _____________________________________________________________
+enum Hardness {
+  L0,
+  L1,
+  L2,
+  L3,
+  L4,
+  L5,
+  L6,
+  L7,
+  L8,
+  L9,
+  L10
+}
+
+enum Skill {
+  Programming
+}
+
+enum ThemeState {
+  Banned,
+  Denied,
+  Reviewing,
+  Approved
+}
+
+type Theme {
+  id: ID!
+  title: String!
+  description: String!
+  presentationSlide: UUID!
+  hardness: Hardness!
+  skills: [Skill!]!
+  author: User!
+  mentors: [User!]!
+  state: ThemeState!
+  seasons: [Season!]!
+}
+
+input ThemeInput {
+  title: String!
+  description: String!
+  presentationSlide: UUID!
+  hardness: Hardness!
+  skills: [Skill!]!
+  seasonsId: [ID!]!
+}
+#_____________________________________________ THEME END _______________________________________________________________
+
+#_____________________________________________ TEAM START ______________________________________________________________
+enum TeamState {
+  Banned,
+  Denied,
+  InProgress,
+  Approved,
+  End
+}
+
+input ParticipantAttachmentInput {
+  code: ID!
+  secondName: String!
+}
+
+type Team {
+  id: ID!
+  title: String!
+  chosenTheme: Theme
+  chosenMentor: User
+  participants: [User!]!
+  preferThemes: [Theme!]!
+  state: TeamState!
+  seasons: [Season!]!
+}
+
+input TeamInput {
+  title: String!
+  participants: [ID!]!
+  preferThemes: [ID!]!
+  seasonsId: [ID!]!
+}
+#_____________________________________________ TEAM END ________________________________________________________________

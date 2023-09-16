@@ -1,0 +1,77 @@
+type Mutation {
+  #_____________________________________________ STAGEINFO START _______________________________________________________
+  updateStageInfo(stageInfoId: ID!, stageInfoInput: StageInfoInput!): StageInfo! # todo: unimplemented
+  deleteStageInfo(stageInfoId: ID!): Boolean! # todo: unimplemented
+  #_____________________________________________ STAGEINFO END _________________________________________________________
+
+  #_____________________________________________ SEASON START __________________________________________________________
+  createSeason(seasonInput: SeasonInput!): Season!
+  updateSeason(seasonId: ID!, seasonInput: SeasonInput!): Season!
+  deleteSeason(seasonId: ID!): Boolean!
+
+  addStageInfoToSeason(seasonId: ID!, stageInfoInput: StageInfoInput!): Season!
+  addCreatedStageInfoToSeason(seasonId: ID!, stageInfoId: ID!): Season!
+  removeStageInfoFromSeason(seasonId: ID!, stageInfoId: ID!): Season!
+  #_____________________________________________ SEASON END ____________________________________________________________
+
+  #_____________________________________________ USER START ____________________________________________________________
+  unconfirmUser(userId: ID!): User!
+  confirmUser(userId: ID!): User!
+  banUser(userId: ID!): User!
+  deleteUser(userId: ID!): Boolean!
+  #_____________________________________________ USER END ______________________________________________________________
+
+  #_____________________________________________ CREDENTIALS START _____________________________________________________
+  registerAdmin(credentialsInput: CredentialsInput!, userInput: UserInput!) : User!
+  registerModerator(credentialsInput: CredentialsInput!, userInput: UserInput!) : User!
+  registerMentor(credentialsInput: CredentialsInput!, userInput: UserInput!) : User!
+  registerParticipant(credentialsInput: CredentialsInput!, userInput: UserInput!) : User!
+
+  updateCredentials(oldCredentials: CredentialsInput!, newCredentials: CredentialsInput!): String!
+  #_____________________________________________ CREDENTIALS END _______________________________________________________
+
+  #_____________________________________________ FILE START ____________________________________________________________
+  importParticipants(file: UUID!): UUID!
+  #_____________________________________________ FILE END ______________________________________________________________
+
+  #_____________________________________________ TEAM START ____________________________________________________________
+  createTeam(teamInput: TeamInput!): Team!
+  updateTeam(teamId: ID!, team: TeamInput!): Team!
+  deleteTeam(teamId: ID!): Boolean!
+
+  attachParticipantToTeam(teamId: ID!, participantInfo: ParticipantAttachmentInput!): Team!
+  removeParticipantFromTeam(teamId: ID!, userId: ID!): Team!
+  leaveTeam(teamId: ID!): Team!
+
+  setMentor(teamId: ID!, userId: ID!): Team!
+  removeMentor(teamId: ID!): Team!
+
+  setTheme(teamId: ID!, themeId: ID!): Team!
+  removeTheme(teamId: ID!): Team!
+
+  changeTeamState(teamId: ID!, state: TeamState!): Team!
+
+  addSeasonToTeam(teamId: ID!, seasonId: ID!): Team!
+  removeSeasonFromTeam(teamId: ID!, seasonId: ID!): Team!
+  #_____________________________________________ TEAM END ______________________________________________________________
+
+  #_____________________________________________ THEME START ___________________________________________________________
+  createTheme(themeInput: ThemeInput!): Theme!
+  updateTheme(themeId: ID!, theme: ThemeInput!): Theme!
+  deleteTheme(themeId: ID!): Boolean!
+
+  setAuthorToTheme(themeId: ID!, userId: ID!): Theme!
+
+  attachMentorsToTheme(themeId: ID!, mentorIds: [ID!]!): Theme!
+  detachMentorsFromTheme(themeId: ID!, mentorIds: [ID!]!): Theme!
+
+  changeThemeState(themeId: ID!, state: ThemeState!): Theme!
+
+  addSeasonToTheme(themeId: ID!, seasonId: ID!): Theme!
+  removeSeasonFromTheme(themeId: ID!, seasonId: ID!): Theme!
+  #_____________________________________________ THEME END _____________________________________________________________
+
+  #_____________________________________________ TELEGRAM START ________________________________________________________
+  sendTelegramMessage(userId: ID!, message: String!): Boolean!
+  #_____________________________________________ TELEGRAM END __________________________________________________________
+}

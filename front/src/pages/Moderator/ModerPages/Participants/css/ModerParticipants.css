@@ -1,0 +1,35 @@
+.create_participant_form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create_participant_form input {
+    border: 1px solid #555B6E;
+    border-radius: 5px;
+    margin: 12px 0;
+    padding: 3px 5px;
+    width: 300px;
+}
+
+.create_participant_form button {
+    margin-top: 1.2em;
+    font-weight: 600;
+    color: #f9f9f9;
+    padding: 7px;
+    border: 1px solid #606468;
+    box-shadow: 0 1px 3px #606468;
+    background-color: #606468;
+    border-radius: 5px;
+}
+
+.create_participant_form button:hover {
+    background-color: #707478;
+}
+
+.create_participant_form button:active {
+    border: 1px solid #808488;
+}
+
+.create_participant_form input:required {
+    box-shadow: 0 1px 1px #d55;
+}

@@ -1,0 +1,40 @@
+name: React CI dev
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "dev", "front" ]
+  pull_request:
+    branches: [ "main", "dev", "front" ]
+
+permissions:
+  deployments: write
+  pages: write
+  contents: read
+  id-token: write
+  
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Build React app
+        run: |
+          cd front
+          unset CI
+          npm ci
+          npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload
+        uses: actions/upload-pages-artifact@v1.0.8
+        with: 
+          path: ./front/build
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2

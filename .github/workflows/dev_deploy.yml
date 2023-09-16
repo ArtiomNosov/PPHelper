@@ -1,0 +1,123 @@
+name: Java CI dev with Gradle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "dev", "back" ]
+  pull_request:
+    branches: [ "main", "dev", "back" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "backend"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up JDK 19
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'adopt'
+          cache: 'gradle'
+      - name: Write secrets to application.properties
+        run: |
+          echo "spring.datasource.url=${{ secrets.SPRING_DATASOURCE_URL }}" >> src/main/resources/application.properties
+          echo "spring.datasource.username=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> src/main/resources/application.properties
+          echo "spring.datasource.password=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> src/main/resources/application.properties
+          echo "spring.jpa.hibernate.ddl-auto=${{ vars.SPRING_JPA_HIBERNATE_DDL_AUTO }}" >> src/main/resources/application.properties
+          echo "lets-encrypt-helper.domain=${{ vars.HOSTNAME }}" >> src/main/resources/application.properties
+          echo "server.ssl.key-store-password=${{ secrets.SERVER_SSL_KEY_STORE_PASSWORD }}" >> src/main/resources/application.properties
+          echo "bot.name=${{ secrets.NOTIFICATIONS_BOT_NAME }}" >> src/main/resources/application.properties
+          echo "bot.token=${{ secrets.NOTIFICATIONS_BOT_TOKEN }}" >> src/main/resources/application.properties
+      - name: Grant permissions
+        run: chmod +x ./gradlew
+      - name: Build bootJar with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: bootJar
+      - name: Rename artifact
+        run: |
+          for f in ./build/libs/*.jar
+          do
+            mv "$f" "./build/libs/proisic_dev_new.jar"
+          done
+
+      - name: Copy build via ssh (try 1/5)
+        id: scp1
+        uses: appleboy/scp-action@v0.1.4
+        continue-on-error: true
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          source: "build/libs/proisic_dev_new.jar"
+          target: "/root/proisic_dev/"
+      - name: Copy build via ssh (try 2/5)
+        id: scp2
+        if: steps.scp1.outcome == 'failure'
+        uses: appleboy/scp-action@v0.1.4
+        continue-on-error: true
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          source: "build/libs/proisic_dev_new.jar"
+          target: "/root/proisic_dev/"
+      - name: Copy build via ssh (try 3/5)
+        id: scp3
+        if: steps.scp2.outcome == 'failure'
+        uses: appleboy/scp-action@v0.1.4
+        continue-on-error: true
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          source: "build/libs/proisic_dev_new.jar"
+          target: "/root/proisic_dev/"
+      - name: Copy build via ssh (try 4/5)
+        id: scp4
+        if: steps.scp3.outcome == 'failure'
+        uses: appleboy/scp-action@v0.1.4
+        continue-on-error: true
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          source: "build/libs/proisic_dev_new.jar"
+          target: "/root/proisic_dev/"
+      - name: Copy build via ssh (try 5/5)
+        if: steps.scp4.outcome == 'failure'
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          source: "build/libs/proisic_dev_new.jar"
+          target: "/root/proisic_dev/"
+
+      - name: Deploy application on remote server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VDS_ADDRESS }}
+          username: ${{ secrets.VDS_USER }}
+          password: ${{ secrets.VDS_PASS }}
+          port: 22
+          script: |
+            /etc/init.d/proisic_dev stop
+            rm -rf /root/proisic_dev/proisic_dev.jar
+            mv /root/proisic_dev/build/libs/proisic_dev_new.jar /root/proisic_dev/proisic_dev.jar
+            rm -rf /root/proisic_dev/build
+            /etc/init.d/proisic_dev start

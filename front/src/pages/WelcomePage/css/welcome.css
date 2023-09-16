@@ -1,0 +1,94 @@
+.loginField {
+  display: flex;
+  margin: 14px;
+  margin: 0.875rem;
+}
+
+#welcomeLogin, #welcomePwd {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.login input{
+  background-color: #BEE3DB;
+  border: 2px solid #aad3cB;
+  border-radius: 4px;
+  border-radius: 0.25rem;
+  padding: 16px;
+  padding: 1rem;
+}
+
+.login input[type='submit'],
+.login input[type='text'],
+.login input[type='password'] {
+  width: 100%;
+}
+
+.login input:hover {
+  background-color: #B0d5D0;
+}
+
+.login {
+  color:#606468;
+  max-width: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.loginIcon {
+  display: inline-block;
+  fill: #787878;
+  font-size: 16px;
+  font-size: 1rem;
+  height: 1em;
+  vertical-align: middle;
+  width: 1em;
+}
+
+.login label {
+  border-radius: 0.25rem;
+  padding: 16px;
+  padding: 1rem;
+  background-color: #aad3cB;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  padding-left: 20px;
+  padding-left: 1.25rem;
+  padding-right: 20px;
+  padding-right: 1.25rem;
+}
+
+.text--center {
+  text-align: center;
+}
+
+.formField {
+  display: flex;
+  margin: 14px;
+  margin: 0.875rem;
+}
+
+#welcomeSubmit {
+  border: 0;
+  cursor: pointer;
+  background-color: #277cea;
+  color: #eee;
+  font-weight: 700;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.form__image {
+  display: flex;
+  justify-content: center;
+}
+
+.login a {
+  color: #000;
+  outline: 0;
+  text-decoration: none;
+}
+
+.login a:hover {
+  text-decoration: underline;
+}
